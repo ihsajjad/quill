@@ -30,6 +30,34 @@ export const appRouter = router({
     const { userId } = ctx;
     return await db.file.findMany({ where: { userId } });
   }),
+  getFile: privateProcidure
+    .input(z.object({ key: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx;
+      const file = await db.file.findFirst({
+        where: { key: input?.key, userId },
+      });
+
+      if (!file) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return file;
+    }),
+  uploadFile: privateProcidure
+    .input(z.object({ key: z.string(), name: z.string(), url: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx;
+      const createdFile = await db.file.create({
+        data: {
+          key: input.key,
+          name: input.name,
+          userId,
+          url: input.url,
+          uploadStatus: "PROCESSING",
+        },
+      });
+
+      return createdFile;
+    }),
   deleteFile: privateProcidure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
