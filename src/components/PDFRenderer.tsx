@@ -5,7 +5,8 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { useToast } from "./ui/use-toast";
-
+import { useResizeDetector } from "react-resize-detector";
+import { ref } from "firebase/storage";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface PdfRendererProps {
@@ -14,6 +15,7 @@ interface PdfRendererProps {
 
 const PDFRenderer = ({ url }: PdfRendererProps) => {
   const { toast } = useToast();
+  const { width, ref } = useResizeDetector();
 
   return (
     <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
@@ -22,23 +24,25 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
       </div>
 
       <div className="flex-1 w-full h-full">
-        <Document
-          loading={
-            <div className="flex justify-center">
-              <Loader2 className="my-24 h-6 w-6 animate-spin" />
-            </div>
-          }
-          onLoadError={() =>
-            toast({
-              title: "Error loading pdf",
-              description: " Please try again later",
-              variant: "destructive",
-            })
-          }
-          file={url}
-        >
-          <Page pageNumber={1}></Page>
-        </Document>
+        <div ref={ref}>
+          <Document
+            loading={
+              <div className="flex justify-center">
+                <Loader2 className="my-24 h-6 w-6 animate-spin" />
+              </div>
+            }
+            onLoadError={() =>
+              toast({
+                title: "Error loading pdf",
+                description: " Please try again later",
+                variant: "destructive",
+              })
+            }
+            file={url}
+          >
+            <Page width={width ? width : 1} pageNumber={1}></Page>
+          </Document>
+        </div>
       </div>
     </div>
   );
