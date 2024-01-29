@@ -27,7 +27,7 @@ export default function RootLayout({
         <body
           className={cn(
             "min-h-screen font-sans antialiased grainy relative",
-            inter.className
+            inter.className,
           )}
         >
           <Toaster />
