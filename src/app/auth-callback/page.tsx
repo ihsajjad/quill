@@ -30,12 +30,12 @@ const Page = () => {
   // });
 
   const { data, failureReason } = trpc.authCallback.useQuery(undefined, {});
-  
+
   if (data?.success) {
-   return  router.push(origin ? `/${origin}` : "/dashboard");
+    return router.push(origin ? `/${origin}` : "/dashboard");
   }
   if (failureReason?.data?.code === "UNAUTHORIZED") {
-   return router.push("/sign-in");
+    return router.push("/sign-in");
   }
 
   return (

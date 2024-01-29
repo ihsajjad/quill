@@ -44,7 +44,7 @@ const Dashboard = () => {
             .sort(
               (a, b) =>
                 new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
+                new Date(b.createdAt).getTime(),
             )
             .map((file) => (
               <li

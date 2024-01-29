@@ -41,7 +41,7 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
           ? false
           : 500;
       },
-    }
+    },
   );
 
   // data?.status === "SUCCESS" || data?.status === "FAILED" ? false : 500,

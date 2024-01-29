@@ -91,7 +91,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
               {...register("page")}
               className={cn(
                 "w-12 h-8",
-                errors.page && "focus-visible:ring-red-500"
+                errors.page && "focus-visible:ring-red-500",
               )}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -109,7 +109,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
             disabled={numPages === undefined || currPage === numPages}
             onClick={() => {
               setCurrPage((prev) =>
-                prev + 1 > numPages! ? numPages! : prev + 1
+                prev + 1 > numPages! ? numPages! : prev + 1,
               );
               setValue("page", String(currPage + 1));
             }}
@@ -181,7 +181,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
                   pageNumber={currPage}
                   scale={scale}
                   rotate={rotation}
-                  key={'@' + renderedScale}
+                  key={"@" + renderedScale}
                 ></Page>
               ) : null}
 
@@ -191,7 +191,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
                 pageNumber={currPage}
                 scale={scale}
                 rotate={rotation}
-                key={'@' + scale}
+                key={"@" + scale}
                 loading={
                   <div className="flex justify-center">
                     <Loader2 className="my-24 h-6 w-6 animate-spin" />
