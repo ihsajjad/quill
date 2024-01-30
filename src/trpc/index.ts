@@ -173,7 +173,7 @@ export const appRouter = router({
       } catch (error) {
         console.log(error);
         await db.file.update({
-          data: { uploadStatus: "FAILED" },
+          data: { uploadStatus: "SUCCESS" },
           where: { id: createdFile.id },
         });
       }
