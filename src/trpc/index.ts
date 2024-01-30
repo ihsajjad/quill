@@ -3,6 +3,16 @@ import { privateProcidure, publicProcedure, router } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import { z } from "zod";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "@/lib/firebase/firebase.config";
+
+// import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { PineconeStore } from "@langchain/pinecone";
+import { pineconeIndex } from "@/lib/pinecone";
+
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
@@ -68,6 +78,59 @@ export const appRouter = router({
           uploadStatus: "PROCESSING",
         },
       });
+
+      // const fileRef = ref(storage, input.url);
+
+      // await getDownloadURL(fileRef)
+      //   .then((downloadURL) => {
+      //     return fetch(downloadURL);
+      //   })
+      //   .then((res) => res.blob())
+      //   .then(async (blob) => {
+      //     const loader = new PDFLoader(blob);
+
+      //     const pageLevelDocs = await loader.load();
+      //     const pageAmt = pageLevelDocs.length;
+
+      //     // vectorize and index entire document
+      //     const embeddings = new OpenAIEmbeddings();
+      //   });
+
+      try {
+        const loader = new CheerioWebBaseLoader(input.url);
+
+        const pageLevelDocs = await loader.load();
+        const pagesAmt = pageLevelDocs.length;
+
+        const spliter = new RecursiveCharacterTextSplitter();
+
+        const spliteDocs = await spliter.splitDocuments(pageLevelDocs);
+
+        const embeddings = new OpenAIEmbeddings({
+          openAIApiKey: process.env.OPENAI_API_KEY,
+        });
+
+        // vectorize and index entire document
+        await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+          pineconeIndex,
+          namespace: createdFile.id,
+        });
+
+        await db.file.update({
+          data: {
+            uploadStatus: "SUCCESS",
+          },
+          where: {
+            id: createdFile.id,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        await db.file.update({
+          data: { uploadStatus: "FAILED" },
+          where: { id: createdFile.id },
+        });
+      }
 
       return createdFile;
     }),
