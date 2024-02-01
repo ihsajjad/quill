@@ -16,7 +16,7 @@ export const PLANS = [
     pagesPerPdf: 25,
     price: {
       amount: 14,
-      priceIds: { test: "price_1OeeMMBw56OF2FTu7GKOYexb", production: "" },
+      priceIds: { test: "price_1OeeMMBw56OF2FTu7GKOYexb ", production: "" },
     },
   },
 ];
