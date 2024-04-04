@@ -117,6 +117,7 @@ export const appRouter = router({
 
   createStripeSession: privateProcidure.mutation(async ({ ctx }) => {
     const { userId } = ctx;
+    console.log(userId);
 
     const billingUrl = absoluteUrl("/dashboard/billing");
 
@@ -155,8 +156,6 @@ export const appRouter = router({
         userId: userId,
       },
     });
-
-    console.log(stripeSession);
 
     return { url: stripeSession.url };
   }),
