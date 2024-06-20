@@ -1,10 +1,10 @@
 import { trpc } from "@/app/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { Loader2, MessageSquare } from "lucide-react";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Skeleton from "react-loading-skeleton";
-import Message from "./Message";
 import { ChatContext } from "./ChatContext";
+import Message from "./Message";
 
 interface MessagesProps {
   fileId: string;
@@ -17,7 +17,7 @@ const Messages = ({ fileId }: MessagesProps) => {
       { fileId, limit: INFINITE_QUERY_LIMIT },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
-        keepPreviousData: true,
+        // keepPreviousData: true,
       }
     );
 

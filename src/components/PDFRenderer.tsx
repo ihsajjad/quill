@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronDown,
   ChevronUp,
@@ -7,27 +9,24 @@ import {
   RotateCw,
   Search,
 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { useToast } from "./ui/use-toast";
 import { useResizeDetector } from "react-resize-detector";
-import { ref } from "firebase/storage";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@/lib/utils";
 import SimpleBar from "simplebar-react";
+import { z } from "zod";
+import PdfFullScreen from "./PdfFullScreen";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import PdfFullScreen from "./PdfFullScreen";
+import { Input } from "./ui/input";
+import { useToast } from "./ui/use-toast";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface PdfRendererProps {
@@ -44,6 +43,8 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
   const { width, ref } = useResizeDetector();
 
   const isLoading = renderedScale !== scale;
+
+  console.log(url);
 
   const CustomPageValidator = z.object({
     page: z
@@ -91,7 +92,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
               {...register("page")}
               className={cn(
                 "w-12 h-8",
-                errors.page && "focus-visible:ring-red-500",
+                errors.page && "focus-visible:ring-red-500"
               )}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -109,7 +110,7 @@ const PDFRenderer = ({ url }: PdfRendererProps) => {
             disabled={numPages === undefined || currPage === numPages}
             onClick={() => {
               setCurrPage((prev) =>
-                prev + 1 > numPages! ? numPages! : prev + 1,
+                prev + 1 > numPages! ? numPages! : prev + 1
               );
               setValue("page", String(currPage + 1));
             }}
